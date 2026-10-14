@@ -1,15 +1,16 @@
 # Build folder
-./build/*
-./build/
+build/*
+build/
+build
 
 # Executables
-./build/*.out
-./build/*.exe
+build/*.out
+build/*.exe
 
 # Objects
-./*.o
+*.o
 
 # Libraries
-./*.a
-./*.so
-./*.dll
+*.a
+*.so
+*.dll
