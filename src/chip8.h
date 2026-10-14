@@ -1,12 +1,12 @@
 #pragma once
 
-#include <iostream>
+#include <cstdio>
 #include <ios>
 #include <cstdint>
 #include <cstring>
 
-//Register's opcode functions
-//SRC: https://chip8.gulrak.net/
+// Register's opcode functions
+// src: https://chip8.gulrak.net/
 void OP_0nnn();
 void OP_00E0();
 void OP_00EE();
@@ -43,7 +43,7 @@ void OP_Fx33();
 void OP_Fx55();
 void OP_Fx65();
 
-uint8_t fontset[80] = { 
+static uint8_t FONTSET[80] = { 
 	0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 	0x20, 0x60, 0x20, 0x20, 0x70, // 1
 	0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -63,7 +63,7 @@ uint8_t fontset[80] = {
 };
 
 struct Chip8 {
-	//SRC: https://www.cs.columbia.edu/~sedwards/classes/2016/4840-spring/designs/Chip8.pdf
+	// src: https://www.cs.columbia.edu/~sedwards/classes/2016/4840-spring/designs/Chip8.pdf
 	uint16_t opcode;
 	uint8_t  memory[4096];
 	uint8_t  V[16];		   //Registers 0 to F
@@ -98,12 +98,12 @@ struct Chip8 {
 			break;
 
 		default:
-			std::cout << "Unknown opcode: 0x" << std::hex << opcode << "\n";
+			printf("Don't recognize opcode 0x%X\n", opcode);
 		}
 
 		if (delay_timer > 0) --delay_timer;
 		if (sound_timer == 1) {
-			std::cout << "BEEP!\n";
+			printf("BEEP!\n");
 			--sound_timer;
 		}
 	}

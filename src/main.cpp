@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cstdio>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
@@ -12,7 +12,7 @@ static const int HEIGHT = 256;
 
 int main() {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
-		std::cerr << "Can't initialize SDL2...\n";
+		fprintf(stderr, "Can't initialize SDL2...\n");
 		return -1;
 	}
 
