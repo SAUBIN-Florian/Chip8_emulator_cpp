@@ -1,10 +1,8 @@
 #pragma once
 
-#include <cstdio>
-#include <ios>
-#include <cstdint>
-#include <cstring>
 #include <array>
+#include <cstdint>
+#include <cstddef>
 
 // Opcode functions declarations
 // src: https://chip8.gulrak.net/
@@ -167,35 +165,131 @@ void OP_5xy0(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
 	}
 }
 
-void OP_6xnn(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+void OP_6xnn(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx = (opcode & 0x00F0) >> 8;
+	v[idx] = (opcode & 0x00FF);
+	pc += 2;
+}
 
-void OP_7xnn(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+void OP_7xnn(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx = (opcode & 0x00F0) >> 8;
+	v[idx] += (opcode & 0x00FF);
+	pc += 2;
+}
 
-void OP_8xy0(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+void OP_8xy0(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx0 = (opcode & 0x0F00) >> 8;
+	size_t idx1 = (opcode & 0x00F0) >> 4;
 
-void OP_8xy1(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+	v[idx0] = v[idx1];
+	pc += 2;
+}
 
-void OP_8xy2(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+void OP_8xy1(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx0 = (opcode & 0x0F00) >> 8;
+	size_t idx1 = (opcode & 0x00F0) >> 4;
 
-void OP_8xy3(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+	v[idx0] |= v[idx1];
+	pc += 2;
+}
 
-void OP_8xy4(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+void OP_8xy2(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx0 = (opcode & 0x0F00) >> 8;
+	size_t idx1 = (opcode & 0x00F0) >> 4;
 
-void OP_8xy5(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+	v[idx0] &= v[idx1];
+	pc += 2;
+}
 
-void OP_8xy6(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+void OP_8xy3(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx0 = (opcode & 0x0F00) >> 8;
+	size_t idx1 = (opcode & 0x00F0) >> 4;
 
-void OP_8xy7(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+	v[idx0] ^= v[idx1];
+	pc += 2;
+}
 
-void OP_8xyE(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+void OP_8xy4(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx0 = (opcode & 0x0F00) >> 8;
+	size_t idx1 = (opcode & 0x00F0) >> 4;
 
-void OP_9xy0(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+	if (v[idx0] < v[idx1]) {
+		v[0xF] = 0;
+	} else {
+		v[0xF] = 1;
+	}
 
-void OP_Annn(uint16_t& opcode, uint16_t& i, uint16_t& pc);
+	v[idx0] += v[idx1];
+	pc += 2;
+}
 
-void OP_Bnnn(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+void OP_8xy5(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx0 = (opcode & 0x0F00) >> 8;
+	size_t idx1 = (opcode & 0x00F0) >> 4;
 
-void OP_Cxnn(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc);
+	if (v[idx0] < v[idx1]) {
+		v[0xF] = 1;
+	} else {
+		v[0xF] = 0;
+	}
+
+	v[idx0] -= v[idx1];
+	pc += 2;
+}
+
+void OP_8xy6(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx = (opcode & 0x0F00) >> 8;
+	v[0xF] = v[idx] & 0x1;
+	v[idx] >>= 1;
+	pc += 2;
+}
+
+void OP_8xy7(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx0 = (opcode & 0x0F00) >> 8;
+	size_t idx1 = (opcode & 0x00F0) >> 4;
+
+	if (v[idx0] > v[idx1]) {
+		v[0xF] = 0;
+	} else {
+		v[0xF] = 1;
+	}
+
+	v[idx0] = v[idx1] - v[idx0];
+	pc += 2;
+}
+
+void OP_8xyE(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx = (opcode & 0x0F00) >> 8;
+	v[0xF] = v[idx] >> 7;
+	v[idx] <<= 1;
+	pc += 2;
+}
+
+void OP_9xy0(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx0 = (opcode & 0x0F00) >> 8;
+	size_t idx1 = (opcode & 0x00F0) >> 4;
+
+	if (v[idx0] != v[idx1]) {
+		pc += 4;
+	} else {
+		pc += 2;
+	}
+}
+
+void OP_Annn(uint16_t& opcode, uint16_t& i, uint16_t& pc) {
+	i = opcode & 0x0FFF;
+	pc += 2;
+}
+
+void OP_Bnnn(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	pc = (opcode & 0x0FFF) + v[0];
+}
+
+void OP_Cxnn(uint16_t& opcode, std::array<uint8_t, 16>& v, uint16_t& pc) {
+	size_t idx = (opcode & 0x0F00) >> 8;
+	// TODO: implement randomness here...
+	
+}
 
 void OP_Dxyn(uint16_t& opcode, 
 			 std::array<uint8_t, 64*32>& gfx, 
