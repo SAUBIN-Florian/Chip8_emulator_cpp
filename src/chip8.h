@@ -10,7 +10,6 @@
 
 // Opcode functions declarations
 // src: https://chip8.gulrak.net/
-//void OP_0nnn();
 void OP_00E0(std::array<uint8_t, 64*32>& gfx, uint16_t& pc, bool& flag);
 void OP_00EE(std::array<uint16_t, 16>& stack, uint16_t& pc, uint8_t& sp);
 void OP_1nnn(uint16_t& opcode, uint16_t& pc);
@@ -161,11 +160,13 @@ struct Chip8 {
 		if (delay_timer > 0) --delay_timer;
 		if (sound_timer == 1) --sound_timer;
 	}
+
+	// TODO: implement this later
+	void debug_render() {}
+	bool load_game(const char* filename) {}
 };
 
 // Opcode functions implementations
-//void OP_0nnn() {}
-
 void OP_00E0(std::array<uint8_t, 64*32>& gfx, uint16_t& pc, bool& flag) {
 	for (auto& px: gfx) {
 		px = 0x0;
